@@ -846,11 +846,11 @@ final public class AnimationView: LottieView {
   }
   
   @objc override func animationWillMoveToBackground() {
-    updateAnimationForBackgroundState()
+    pauseWithResume()
   }
   
   @objc override func animationWillEnterForeground() {
-    updateAnimationForForegroundState()
+    resume()
   }
   
   override func animationMovedToWindow() {
@@ -859,13 +859,13 @@ final public class AnimationView: LottieView {
     guard superview != nil else { return }
 
     if window != nil {
-      updateAnimationForForegroundState()
+      resume()
     } else {
-      updateAnimationForBackgroundState()
+      pauseWithResume()
     }
   }
   
-  fileprivate func updateAnimationForBackgroundState() {
+  public func pauseWithResume() {
     if let currentContext = animationContext {
       switch backgroundBehavior {
       case .stop:
@@ -886,7 +886,7 @@ final public class AnimationView: LottieView {
   }
   
   fileprivate var waitingToPlayAnimation: Bool = false
-  fileprivate func updateAnimationForForegroundState() {
+  public func resume() {
     if let currentContext = animationContext {
       if waitingToPlayAnimation {
         waitingToPlayAnimation = false
